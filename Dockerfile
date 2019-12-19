@@ -27,9 +27,9 @@ ENV INVENTREE_MEDIA="/usr/src/media"
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git libmariadb-dev gcc libjpeg-dev zlib1g-dev make
 
-RUN if [[ "${VERSION}" =~ "-" ]] ; then \
-    git clone --branch master --single-branch https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
-    else git clone --branch ${VERSION} --single-branch https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT}; fi
+RUN /bin/bash -c 'if [[ "$VERSION" =~ - ]] ; \
+    then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
+    else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi'
 
 #uncomment to install new requirements in development
 #COPY ./InvenTree/requirements.txt ${INVENTREE_ROOT}/requirements.txt

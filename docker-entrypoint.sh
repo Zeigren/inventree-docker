@@ -70,10 +70,12 @@ backup_dir: ${BACKUP_DIR:-'/home/inventree/backup/'}
 EOF
 fi
 
-if [ ! -f "$INVENTREE_HOME/secret_key.txt" ]; then
-cat > "$INVENTREE_HOME/secret_key.txt" <<EOF
-${SECRET_KEY:-AYYYYYYYYLMAO}
+if [ ! -f "$INVENTREE_HOME/secret_key.txt" ] && [ "${SECRET_KEY}" != "" ] ;
+  then cat > "$INVENTREE_HOME/secret_key.txt" <<EOF
+    ${SECRET_KEY}
 EOF
+  else
+    python setup.py ;
 fi
 
 if [ "$MIGRATE_STATIC" = "true" ]; then
