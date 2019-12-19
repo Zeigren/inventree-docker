@@ -1,0 +1,89 @@
+version: '3.7'
+services:
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - inventree
+    networks:
+      - inventree
+    volumes:
+      - static:/var/www/inventree/static
+      - media:/var/www/inventree/media
+    ports:
+      - "80:80"
+      - "443:443"
+    configs:
+      - source: inventree_vhost
+        target: /etc/nginx/conf.d/default.conf
+    secrets:
+      - source: YOURDOMAIN.com.crt
+        target: /etc/nginx/certs/YOURDOMAIN.com.crt
+      - source: YOURDOMAIN.com.key
+        target: /etc/nginx/certs/YOURDOMAIN.com.key
+      - source: dhparam.pem
+        target: /etc/nginx/dhparam/dhparam.pem
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/inventreesql_root_password
+      - MYSQL_DATABASE=inventree
+      - MYSQL_USER=inventree
+      - MYSQL_PASSWORD_FILE=/run/secrets/inventreesql_password
+# work around for https://github.com/docker-library/mariadb/issues/262
+      - MYSQL_INITDB_SKIP_TZINFO=1
+    secrets:
+      - inventreesql_root_password
+      - inventreesql_password
+    networks:
+      - mariadb
+
+  inventree:
+    image: zeigren/inventree:latest
+    depends_on:
+      - mariadb
+    networks:
+      - inventree
+      - mariadb
+    volumes:
+      - static:/usr/src/static
+      - media:/usr/src/media
+    environment:
+      - MIGRATE_STATIC=false
+      - DEBUG=False
+      - DATABASE_PASSWORD=/run/secrets/inventreesql_password
+      - DATABASE_NAME=inventree
+      - DATABASE_USER=inventree
+      - SECRET_KEY=/run/secrets/secret_key
+    secrets:
+      - inventreesql_password
+      - secret_key
+
+networks:
+  inventree:
+  mariadb:
+
+volumes:
+  static:
+  media:
+  mariadb:
+
+secrets:
+  inventreesql_root_password:
+    external: true
+  inventreesql_password:
+    external: true
+  YOURDOMAIN.com.crt:
+    external: true
+  YOURDOMAIN.com.key:
+    external: true
+  dhparam.pem:
+    external: true
+  secret_key:
+    external: true
+
+configs:
+  inventree_vhost:
+    external: true

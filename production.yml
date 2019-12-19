@@ -1,0 +1,18 @@
+version: '3.7'
+services:
+  nginx:
+    volumes:
+      - ./config/inventree_prod_vhost.conf:/etc/nginx/conf.d/default.conf
+      - ./config/YOURDOMAIN.com.crt:/etc/nginx/certs/YOURDOMAIN.com.crt
+      - ./config/YOURDOMAIN.com.key:/etc/nginx/certs/YOURDOMAIN.com.key
+      - ./config/dhparam.pem:/etc/nginx/dhparam/dhparam.pem
+    ports:
+      - "80:80"
+      - "443:443"
+
+  inventree:
+    image: zeigren/inventree:latest
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./config/secret_key.txt:/usr/src/app/InvenTree/secret_key.txt

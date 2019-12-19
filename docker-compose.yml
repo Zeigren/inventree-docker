@@ -1,0 +1,47 @@
+version: '3.7'
+services:
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - inventree
+    networks:
+      - inventree
+    volumes:
+      - static:/var/www/inventree/static
+      - media:/var/www/inventree/media
+
+  mariadb:
+    image: mariadb:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=CHANGEME
+      - MYSQL_DATABASE=inventree
+      - MYSQL_USER=inventree
+      - MYSQL_PASSWORD=CHANGEME
+# work around for https://github.com/docker-library/mariadb/issues/262
+      - MYSQL_INITDB_SKIP_TZINFO=1
+    networks:
+      - mariadb
+    volumes:
+      - mariadb:/var/lib/mysql
+
+  inventree:
+    image: inventree:latest
+    depends_on:
+      - mariadb
+    networks:
+      - inventree
+      - mariadb
+    volumes:
+      - static:/usr/src/static
+      - media:/usr/src/media
+    environment:
+      - MIGRATE_STATIC=false
+
+networks:
+  inventree:
+  mariadb:
+
+volumes:
+  static:
+  media:
+  mariadb:
