@@ -8,7 +8,7 @@
 
 ### Stack
 
-- Python:Slim - InvenTree and Gunicorn
+- [Python:Slim](https://hub.docker.com/_/python) - InvenTree and Gunicorn
 - [Nginx:Alpine](https://hub.docker.com/_/nginx)
 - [Mariadb:10](https://hub.docker.com/_/mariadb)
 
@@ -26,7 +26,7 @@ To give it a quick test copy the `inventree_dev_vhost.conf` file into the config
 
 Once they're running edit the `docker-compose.yml` file and change `MIGRATE_STATIC` to `True`, then run `docker-compose -f docker-compose.yml -f test.yml up -d` again (this step will be fixed at some point). This does all the database initialization and collects all the static files.
 
-Now you’ll need to create the superuser run `docker exec -it inventree python manage.py createsuperuser`. Open up a web browser and go to `127.0.0.1:9080` and you`re good to go!
+Now you'll need to create the superuser run `docker exec -it inventree python manage.py createsuperuser`. Open up a web browser and go to `127.0.0.1:9080` and you're good to go!
 
 ### Configuration
 
