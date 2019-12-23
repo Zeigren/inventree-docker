@@ -1,9 +1,6 @@
 [![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/inventree)](https://hub.docker.com/r/zeigren/inventree)
-
 [![](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree "Get your own image badge on microbadger.com")
-
 [![](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree "Get your own version badge on microbadger.com")
-
 [![](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree "Get your own commit badge on microbadger.com")
 
 ## Docker For [InvenTree](https://github.com/inventree/InvenTree)
