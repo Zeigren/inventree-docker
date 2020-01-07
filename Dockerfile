@@ -18,7 +18,7 @@ RUN apk add --no-cache \
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
 ENV DEV="False"
 
-RUN if echo $VERSION | grep -eq - ; \
+RUN if echo $VERSION | grep -Eq - ; \
     then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
     else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi \
     && python -m venv $VIRTUAL_ENV \
