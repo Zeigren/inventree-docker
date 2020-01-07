@@ -1,7 +1,5 @@
 #!/bin/sh
-
 : ${ENV_SECRETS_DIR:=/run/secrets}
-
 function env_secret_debug() {
     if [ ! -z "$ENV_SECRETS_DEBUG" ]; then
         echo -e "\033[1m$@\033[0m"

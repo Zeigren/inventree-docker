@@ -9,4 +9,4 @@ services:
   inventree:
     image: zeigren/inventree:latest
     environment:
-      - DEBUG=True
+      - DEBUG=False

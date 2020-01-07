@@ -8,9 +8,25 @@ services:
 
   inventree:
     image: inventree:development
-    build:
-      context: .
     environment:
       - DEBUG=True
     volumes:
       - ./InvenTree:/usr/src/app
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    depends_on:
+      - mariadb
+    networks:
+      - mariadb
+    environment:
+      - MYSQL_ROOT_PASSWORD=CHANGEME
+      - MYSQL_DATABASE=inventree
+      - MYSQL_USER=inventree
+      - MYSQL_PASSWORD=CHANGEME
+      - PMA_HOST=mariadb
+      - PMA_PORT=3306
+      - PMA_USER=inventree
+      - PMA_PASSWORD=CHANGEME
+    ports:
+      - "6060:80"

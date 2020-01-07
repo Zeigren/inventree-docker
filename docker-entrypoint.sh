@@ -1,8 +1,7 @@
-#!/bin/bash
-
+#!/bin/sh
 source /env_secrets_expand.sh
-
 set -e
+set -x
 
 if [ ! -f "$INVENTREE_HOME/config.yaml" ]; then
 cat > "$INVENTREE_HOME/config.yaml" <<EOF
@@ -78,7 +77,7 @@ EOF
     python setup.py ;
 fi
 
-if [ "$MIGRATE_STATIC" = "true" ]; then
+if [ "$MIGRATE_STATIC" = "True" ]; then
   make -C /usr/src/app/ migrate
   python manage.py collectstatic --noinput
 fi
