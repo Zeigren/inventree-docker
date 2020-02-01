@@ -1,7 +1,7 @@
 [![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/inventree)](https://hub.docker.com/r/zeigren/inventree)
-[![](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree "Get your own version badge on microbadger.com")
-[![](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree "Get your own commit badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+[![](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+[![](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
 
 ## Docker For [InvenTree](https://github.com/inventree/InvenTree)
 
@@ -105,7 +105,7 @@ Run with `docker stack deploy --compose-file docker-stack.yml inventree`
 
 The [Dockerfile](https://docs.docker.com/engine/reference/builder/) uses [multi-stage builds](https://docs.docker.com/develop/develop-images/multistage-build/), [build hooks](https://docs.docker.com/docker-hub/builds/advanced/#build-hook-examples), and [labels](http://label-schema.org/rc1/#build-time-labels) for automated builds on Docker Hub.
 
-The multi-stage build creates a container that can be used for development and another for production. The development container has all the build dependencies for the python packages which are installed into a [python virtual enviroment](https://docs.python.org/3/tutorial/venv.html). The production container copies the python virtual environment from the development container and runs InvenTree from there, this allows it to be much more lightweight.
+The multi-stage build creates a container that can be used for development and another for production. The development container has all the build dependencies for the python packages which are installed into a [python virtual environment](https://docs.python.org/3/tutorial/venv.html). The production container copies the python virtual environment from the development container and runs InvenTree from there, this allows it to be much more lightweight.
 
 On startup, the container first runs the `docker-entrypoint.sh` script before running the `gunicorn -c gunicorn.conf.py InvenTree.wsgi` command.
 
@@ -127,7 +127,7 @@ SQL database.
 
 Clone the [InvenTree](https://github.com/inventree/InvenTree) repository into a folder called `InvenTree` and build the development Docker image by running `docker build . --target development -t inventree:development`. Then use `docker-compose -f docker-compose.yml -f development.yml up -d` to grab all the other Docker images and run InvenTree.
 
-### InvenTree
+### InvenTree Development
 
 The clone you made of InvenTree replaces the one in the Docker container when the container is started (as seen in `development.yml`). So any changes you make are reflected in the Docker container (you may need to restart the container for those changes to take effect).
 

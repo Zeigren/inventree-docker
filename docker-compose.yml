@@ -36,7 +36,7 @@ services:
       - static:/usr/src/static
       - media:/usr/src/media
     environment:
-      - MIGRATE_STATIC=False
+      - MIGRATE_STATIC=True
 
 networks:
   inventree:

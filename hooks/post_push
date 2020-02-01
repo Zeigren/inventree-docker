@@ -1,0 +1,11 @@
+#!/bin/bash
+
+TAGDATE=$(date -u +"%Y%m%d")
+
+echo "[***] Adding date to label"
+
+docker tag $IMAGE_NAME $IMAGE_NAME-$TAGDATE
+docker push $IMAGE_NAME-$TAGDATE
+
+docker tag $IMAGE_NAME $DOCKER_REPO:latest
+docker push $DOCKER_REPO:latest

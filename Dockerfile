@@ -1,7 +1,5 @@
 FROM python:alpine AS development
 
-ARG VERSION=master
-
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV INVENTREE_ROOT="/usr/src/app"
@@ -12,15 +10,13 @@ ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
-    gcc mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make
+    gcc mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make bash libgcc libstdc++
 
 # Uncomment COPY and change DEV="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
 ENV DEV="False"
 
-RUN if echo $VERSION | grep -Eq - ; \
-    then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
-    else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi \
+RUN git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} \
     && python -m venv $VIRTUAL_ENV \
     && pip install --upgrade pip \
     && if [ $DEV = True ] ; \
@@ -45,14 +41,14 @@ ARG BRANCH
 ARG COMMIT
 ARG DATE
 ARG URL
-ARG VERSION=master
+ARG VERSION
 
 LABEL org.label-schema.schema-version="1.0" \
     org.label-schema.build-date=$DATE \
     org.label-schema.vendor="Zeigren" \
     org.label-schema.name="zeigren/inventree" \
     org.label-schema.url="https://hub.docker.com/r/zeigren/inventree" \
-    org.label-schema.version="$VERSION" \
+    org.label-schema.version=$VERSION \
     org.label-schema.vcs-url=$URL \
     org.label-schema.vcs-branch=$BRANCH \
     org.label-schema.vcs-ref=$COMMIT
