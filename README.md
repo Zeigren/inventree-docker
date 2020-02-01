@@ -19,6 +19,16 @@
 
 - [phpMyAdmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
 
+## Tags
+
+Builds are automatically triggered and tagged when InvenTree or the container image is updated.
+
+The tags follow this naming scheme:
+
+- container.version-date
+- container.version (this will be the same as the newest container.version-date)
+- latest (this will be the same as the newest container.version-date)
+
 ## Usage
 
 Use [Docker Compose](https://docs.docker.com/compose/) or [Docker Swarm](https://docs.docker.com/engine/swarm/) to deploy InvenTree for either development or production.
