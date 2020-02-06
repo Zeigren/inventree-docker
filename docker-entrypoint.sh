@@ -1,7 +1,6 @@
 #!/bin/sh
 source /env_secrets_expand.sh
 set -e
-set -x
 
 if [ ! -f "$INVENTREE_HOME/config.yaml" ]; then
 cat > "$INVENTREE_HOME/config.yaml" <<EOF
@@ -76,6 +75,14 @@ EOF
   else
     python setup.py ;
 fi
+
+echo "Test connection to ${DATABASE_HOST}"
+
+/wait-for.sh ${DATABASE_HOST:-mariadb}:${DATABASE_PORT:-3306} -- echo 'Success!'
+
+echo "Give ${DATABASE_HOST} a few seconds to warm up"
+
+sleep 5s
 
 if [ "$MIGRATE_STATIC" = "True" ]; then
   make -C /usr/src/app/ migrate

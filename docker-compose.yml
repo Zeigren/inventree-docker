@@ -37,6 +37,9 @@ services:
       - media:/usr/src/media
     environment:
       - MIGRATE_STATIC=True
+      - DATABASE_NAME=inventree
+      - DATABASE_USER=inventree
+      - DATABASE_PASSWORD=CHANGEME
 
 networks:
   inventree:

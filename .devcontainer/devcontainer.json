@@ -1,0 +1,40 @@
+
+{
+	"name": "InvenTree",
+
+	// Update the 'dockerComposeFile' list if you have more compose files or use different names.
+	"dockerComposeFile": ["../docker-compose.yml", "../config/development.yml"],
+
+	// The 'service' property is the name of the service for the container that VS Code should
+	// use. Update this value and .devcontainer/docker-compose.yml to the real service name.
+	"service": "inventree",
+
+	// The optional 'workspaceFolder' property is the path VS Code should open by default when
+	// connected. This is typically a volume mount in .devcontainer/docker-compose.yml
+	"workspaceFolder": "/usr/src",
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+		"terminal.integrated.shell.linux": "/bin/ash"
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+		"streetsidesoftware.code-spell-checker",
+		"batisteo.vscode-django",
+		"usernamehw.errorlens",
+		"mhutchie.git-graph",
+		"ms-python.python",
+		"visualstudioexptteam.vscodeintellicode"
+	],
+
+	// Uncomment the next line if you want start specific services in your Docker Compose config.
+	// "runServices": [],
+
+	// Uncomment this like if you want to keep your containers running after VS Code shuts down.
+	// "shutdownAction": "none",
+
+	// Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
+	// "remoteUser": "vscode"
+	"overrideCommand": "false"
+}

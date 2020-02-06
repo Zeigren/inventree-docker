@@ -1,4 +1,9 @@
+ARG VERSION=master
+
 FROM python:alpine AS development
+
+ARG VERSION
+ARG DOCKER_TAG
 
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -16,17 +21,20 @@ RUN apk add --no-cache \
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
 ENV DEV="False"
 
-RUN git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} \
+RUN if $DOCKER_TAG == latest ; \
+    then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
+    else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi \
     && python -m venv $VIRTUAL_ENV \
     && pip install --upgrade pip \
     && if [ $DEV = True ] ; \
     then pip install --no-cache-dir -U -r /usr/src/dev_requirements.txt mysqlclient gunicorn ; \
     else pip install --no-cache-dir -U -r /usr/src/app/requirements.txt mysqlclient gunicorn ; fi
 
-COPY env_secrets_expand.sh docker-entrypoint.sh /
+COPY env_secrets_expand.sh docker-entrypoint.sh wait-for.sh /
 
 RUN chmod +x /env_secrets_expand.sh \
-    && chmod +x /docker-entrypoint.sh
+    && chmod +x /docker-entrypoint.sh \
+    && chmod +x /wait-for.sh
 
 WORKDIR ${INVENTREE_HOME}
 
@@ -64,10 +72,11 @@ RUN apk add --no-cache \
 
 COPY --from=development $VIRTUAL_ENV $VIRTUAL_ENV
 COPY --from=development $INVENTREE_ROOT $INVENTREE_ROOT
-COPY env_secrets_expand.sh docker-entrypoint.sh /
+COPY env_secrets_expand.sh docker-entrypoint.sh wait-for.sh /
 
 RUN chmod +x /env_secrets_expand.sh \
-    && chmod +x /docker-entrypoint.sh
+    && chmod +x /docker-entrypoint.sh \
+    && chmod +x /wait-for.sh
 
 WORKDIR ${INVENTREE_HOME}
 

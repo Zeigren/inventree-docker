@@ -1,11 +1,12 @@
 #!/bin/bash
 
-TAGDATE=$(date -u +"%Y%m%d")
+INVENTREE_MASTER_COMMIT=$(git ls-remote https://github.com/inventree/InvenTree.git master)
+COMMIT_STUB=$(echo $INVENTREE_MASTER_COMMIT | cut -c1-7)
+INVENTREE_TAG_COMMIT=$(git ls-remote --tags --sort=-version:refname https://github.com/inventree/InvenTree.git [0-9].[0-9].[0-9] | head -n 1)
+INVENTREE_TAG=$(echo $INVENTREE_TAG_COMMIT | rev | cut -d/ -f1 | rev)
 
-echo "[***] Adding date to label"
+echo "[***] Adding labels"
 
-docker tag $IMAGE_NAME $IMAGE_NAME-$TAGDATE
-docker push $IMAGE_NAME-$TAGDATE
-
-docker tag $IMAGE_NAME $DOCKER_REPO:latest
-docker push $DOCKER_REPO:latest
+if $DOCKER_TAG == latest ; then
+docker tag $IMAGE_NAME $DOCKER_REPO:$INVENTREE_TAG-$COMMIT_STUB
+docker push $DOCKER_REPO:$INVENTREE_TAG-$COMMIT_STUB ; fi

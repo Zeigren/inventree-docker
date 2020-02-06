@@ -21,13 +21,11 @@
 
 ## Tags
 
-Builds are automatically triggered and tagged when InvenTree or the container image is updated.
+Tags follow this naming scheme:
 
-The tags follow this naming scheme:
-
-- container.version-date
-- container.version (this will be the same as the newest container.version-date)
-- latest (this will be the same as the newest container.version-date)
+- \*.\*.\* - InvenTree Repository Tag
+- InvenTree Tag-Commit Stub (A commit on master newer than the InvenTree Tag)
+- latest (this will be the same as the newest InvenTree Tag-Commit Stub)
 
 ## Usage
 
@@ -62,7 +60,9 @@ Settings for MariaDB
 
 Database migration and collects the static files, use as needed
 
-- MIGRATE_STATIC=False
+- MIGRATE_STATIC=True
+
+Check `docker-entrypoint.sh` for more options.
 
 #### `test.yml`, `development.yml`, and `production.yml`
 
@@ -154,3 +154,7 @@ If you installed the required packages using `dev_requirements.txt` you can make
 ### phpMyAdmin
 
 Useful for database administration, you can connect to phpMyAdmin at `127.0.0.1:6060`.
+
+### VSCode
+
+You can use VSCode to work in the container directly on either your computer or a remote one. I've included a sample `devcontainer.json` for that purpose. You'll need to check the [official documentation](https://code.visualstudio.com/docs/remote/containers) to set that up.
