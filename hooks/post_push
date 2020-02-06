@@ -4,6 +4,10 @@ INVENTREE_MASTER_COMMIT=$(git ls-remote https://github.com/inventree/InvenTree.g
 COMMIT_STUB=$(echo $INVENTREE_MASTER_COMMIT | cut -c1-7)
 INVENTREE_TAG=$(git tag --sort=-version:refname | head -n 1)
 
+echo $INVENTREE_MASTER_COMMIT
+echo $COMMIT_STUB
+echo $INVENTREE_TAG
+echo $DOCKER_TAG
 echo "[***] Adding labels"
 
 if $DOCKER_TAG == latest ; then
