@@ -10,6 +10,6 @@ echo $INVENTREE_TAG
 echo $DOCKER_TAG
 echo "[***] Adding labels"
 
-if $DOCKER_TAG == latest ; then
+if [ "$DOCKER_TAG" = "latest" ]; then
 docker tag $IMAGE_NAME $DOCKER_REPO:$INVENTREE_TAG-$COMMIT_STUB
 docker push $DOCKER_REPO:$INVENTREE_TAG-$COMMIT_STUB ; fi
