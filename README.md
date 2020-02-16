@@ -2,6 +2,7 @@
 [![](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
 [![](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
 [![](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/inventree)
 
 ## Docker For [InvenTree](https://github.com/inventree/InvenTree)
 

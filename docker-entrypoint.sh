@@ -76,11 +76,11 @@ EOF
     python setup.py ;
 fi
 
-echo "Test connection to ${DATABASE_HOST}"
+echo "Test connection to database"
 
 /wait-for.sh ${DATABASE_HOST:-mariadb}:${DATABASE_PORT:-3306} -- echo 'Success!'
 
-echo "Give ${DATABASE_HOST} a few seconds to warm up"
+echo "Give the database a few seconds to warm up"
 
 sleep 5s
 

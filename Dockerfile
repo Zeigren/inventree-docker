@@ -1,4 +1,5 @@
 ARG VERSION=master
+ARG DOCKER_TAG=latest
 
 FROM python:alpine AS development
 
@@ -19,9 +20,9 @@ RUN apk add --no-cache \
 
 # Uncomment COPY and change DEV="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
-ENV DEV="False"
+#ENV DEV="True"
 
-RUN if $DOCKER_TAG == latest ; \
+RUN if [ $DOCKER_TAG = latest ] ; \
     then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
     else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi \
     && python -m venv $VIRTUAL_ENV \
