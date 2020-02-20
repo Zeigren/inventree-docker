@@ -150,7 +150,7 @@ If you need to change which python packages are installed you can create/alter t
 
 ### Docs
 
-If you installed the required packages using `dev_requirements.txt` you can make the docs by running `docker exec -it -w /usr/src/app make docs`.
+If you installed the required packages using `dev_requirements.txt` you can make the docs by running `docker exec -it inventree -w /usr/src/app make docs`.
 
 ### phpMyAdmin
 
