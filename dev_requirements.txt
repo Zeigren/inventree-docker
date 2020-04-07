@@ -1,5 +1,5 @@
 -r /usr/src/app/docs/requirements.txt
-Django==2.2.9                   # Django package
+Django==2.2.10                  # Django package
 pillow==6.2.0                   # Image manipulation
 djangorestframework==3.10.3     # DRF framework
 django-cors-headers==3.2.0      # CORS headers extension for DRF
@@ -18,7 +18,5 @@ django-qr-code==1.1.0           # Generate QR codes
 flake8==3.3.0                   # PEP checking
 coverage==4.0.3                 # Unit test coverage
 python-coveralls==2.9.1         # Coveralls linking (for Travis)
-fuzzywuzzy==0.17.0              # Fuzzy string matching
-python-Levenshtein==0.12.0      # Required for fuzzywuzzy
-django-guardian==2.2.0              # Object Authentication Backend
-djangorestframework-guardian==0.3.0 # Integrations for Django REST Framework
+rapidfuzz==0.2.1                # Fuzzy string matching
+django-stdimage==5.0.3          # Advanced ImageField management

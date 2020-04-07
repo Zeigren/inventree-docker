@@ -1,22 +1,22 @@
+# Docker For [InvenTree](https://github.com/inventree/InvenTree)
+
 [![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/inventree)](https://hub.docker.com/r/zeigren/inventree)
-[![](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
-[![](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
-[![](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+[![MicroBadger](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+[![MicroBadger](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+[![MicroBadger](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
 ![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/inventree)
 
-## Docker For [InvenTree](https://github.com/inventree/InvenTree)
+## [Docker Hub](https://hub.docker.com/r/zeigren/inventree)
 
-### [Docker Hub](https://hub.docker.com/r/zeigren/inventree)
+## [GitHub](https://github.com/Zeigren/inventree-docker)
 
-### [GitHub](https://github.com/Zeigren/inventree-docker)
+## Stack
 
-### Stack
-
-- [Python:Alpine](https://hub.docker.com/_/python) for InvenTree and Gunicorn
+- [Python:Alpine](https://hub.docker.com/_/python) for InvenTree
 - [Nginx:Alpine](https://hub.docker.com/_/nginx)
 - [MariaDB:10](https://hub.docker.com/_/mariadb)
 
-#### For Development
+### For Development
 
 - [phpMyAdmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
 

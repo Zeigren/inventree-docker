@@ -16,7 +16,7 @@ ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
-    gcc mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make bash libgcc libstdc++
+    gcc g++ mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make bash libgcc libstdc++
 
 # Uncomment COPY and change DEV="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
@@ -69,7 +69,7 @@ ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
-    mariadb-connector-c git make libjpeg-turbo zlib
+    mariadb-connector-c git make libjpeg-turbo zlib libstdc++
 
 COPY --from=development $VIRTUAL_ENV $VIRTUAL_ENV
 COPY --from=development $INVENTREE_ROOT $INVENTREE_ROOT
