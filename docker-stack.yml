@@ -51,12 +51,17 @@ services:
       - static:/usr/src/static
       - media:/usr/src/media
     environment:
-      - MIGRATE_STATIC=false
+      - MIGRATE_STATIC=False
       - DEBUG=False
       - DATABASE_PASSWORD=DOCKER-SECRET->inventreesql_password
       - DATABASE_NAME=inventree
       - DATABASE_USER=inventree
       - SECRET_KEY=DOCKER-SECRET->secret_key
+# use once after running migrate for the first time, then delete from file
+      # - CREATE_SUPERUSER=False
+      # - DJANGO_SUPERUSER_USERNAME=admin
+      # - DJANGO_SUPERUSER_EMAIL=admin@admin.com
+      # - DJANGO_SUPERUSER_PASSWORD=admin
     secrets:
       - inventreesql_password
       - secret_key

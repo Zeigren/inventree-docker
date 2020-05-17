@@ -24,9 +24,14 @@
 
 Tags follow this naming scheme:
 
-- \*.\*.\* - InvenTree Repository Tag
-- InvenTree Tag-Commit Stub (A commit on master newer than the InvenTree Tag)
+- \*.\*.\* - InvenTree Release Tag
+- InvenTree Tag-Commit Stub (A commit on master newer than the InvenTree Release Tag)
 - latest (this will be the same as the newest InvenTree Tag-Commit Stub)
+
+### Release Tags
+- 0.1.0
+- 0.0.10
+- 0.0.8
 
 ## Usage
 
@@ -40,9 +45,9 @@ I like using [Portainer](https://www.portainer.io/) since it makes all the tinke
 
 To give it a quick test copy the `inventree_dev_vhost.conf` file into the config folder and run the `docker-compose -f docker-compose.yml -f test.yml up -d` command in the `inventree-docker` directory. This will pull all the Docker images and run them.
 
-Once they're running edit the `docker-compose.yml` file and change `MIGRATE_STATIC` to `True`, then run `docker-compose -f docker-compose.yml -f test.yml up -d` again (this step will be fixed at some point). This does all the database initialization and collects all the static files.
+Once they're running edit the `docker-compose.yml` file and change `MIGRATE_STATIC` and `CREATE_SUPERUSER` to `True`, then run `docker-compose -f docker-compose.yml -f test.yml up -d` again. This initializes the database, collects all the static files, and creates a superuser.
 
-Now you'll need to create the superuser run `docker exec -it inventree python manage.py createsuperuser`. Open up a web browser and go to `127.0.0.1:9080` and you're good to go!
+Open up a web browser and go to `127.0.0.1:9080` and login with user `admin` and password `admin`, now you're good to go!
 
 ### Configuration
 
@@ -59,10 +64,17 @@ Settings for MariaDB
 - MYSQL_USER=inventree
 - MYSQL_PASSWORD=CHANGEME
 
-Database migration and collects the static files, use as needed
+Migrate database and collect static files. Use on first run and when upgrading InvenTree.
 
 - MIGRATE_STATIC=True
 
+Create a superuser, should only be used once then deleted
+
+- CREATE_SUPERUSER=True
+- DJANGO_SUPERUSER_USERNAME=admin
+- DJANGO_SUPERUSER_EMAIL=admin@admin.com
+- DJANGO_SUPERUSER_PASSWORD=admin
+  
 Check `docker-entrypoint.sh` for more options.
 
 #### `test.yml`, `development.yml`, and `production.yml`

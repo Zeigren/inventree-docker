@@ -89,4 +89,8 @@ if [ "$MIGRATE_STATIC" = "True" ]; then
   python manage.py collectstatic --noinput
 fi
 
+if [ "$CREATE_SUPERUSER" = "True" ]; then
+  python manage.py createsuperuser --noinput
+fi
+
 exec "$@"

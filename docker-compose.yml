@@ -36,10 +36,15 @@ services:
       - static:/usr/src/static
       - media:/usr/src/media
     environment:
-      - MIGRATE_STATIC=True
+      - MIGRATE_STATIC=False
       - DATABASE_NAME=inventree
       - DATABASE_USER=inventree
       - DATABASE_PASSWORD=CHANGEME
+# use once then delete from file
+      - CREATE_SUPERUSER=False
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@admin.com
+      - DJANGO_SUPERUSER_PASSWORD=admin
 
 networks:
   inventree:
