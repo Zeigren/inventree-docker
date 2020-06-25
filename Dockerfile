@@ -16,7 +16,8 @@ ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
-    gcc g++ mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make bash libgcc libstdc++
+    gcc g++ mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make bash libgcc \
+    libstdc++ jpeg-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
 
 # Uncomment COPY and change DEV="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
@@ -26,7 +27,7 @@ RUN if [ $DOCKER_TAG = latest ] ; \
     then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
     else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi \
     && python -m venv $VIRTUAL_ENV \
-    && pip install --upgrade pip \
+    && pip install --upgrade pip setuptools wheel \
     && if [ $DEV = True ] ; \
     then pip install --no-cache-dir -U -r /usr/src/dev_requirements.txt mysqlclient gunicorn ; \
     else pip install --no-cache-dir -U -r /usr/src/app/requirements.txt mysqlclient gunicorn ; fi
@@ -69,7 +70,8 @@ ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
-    mariadb-connector-c git make libjpeg-turbo zlib libstdc++
+    mariadb-connector-c git make libjpeg-turbo zlib libstdc++ \
+    jpeg-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
 
 COPY --from=development $VIRTUAL_ENV $VIRTUAL_ENV
 COPY --from=development $INVENTREE_ROOT $INVENTREE_ROOT
