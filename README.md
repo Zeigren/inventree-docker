@@ -29,6 +29,7 @@ Tags follow this naming scheme:
 - latest (this will be the same as the newest InvenTree Tag-Commit Stub)
 
 ### Release Tags
+- 0.1.1
 - 0.1.0
 - 0.0.10
 - 0.0.8
