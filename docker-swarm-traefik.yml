@@ -1,0 +1,102 @@
+version: "3.7"
+services:
+  nginx:
+    image: nginx:alpine
+    depends_on:
+      - inventree
+    networks:
+      - inventree
+      - traefik
+    volumes:
+      - static:/var/www/inventree/static
+      - media:/var/www/inventree/media
+    configs:
+      - source: inventree_vhost
+        target: /etc/nginx/conf.d/default.conf
+    deploy:
+      labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik"
+        - "traefik.http.routers.inventree-http.entrypoints=web"
+        - "traefik.http.routers.inventree-http.rule=Host(`inventree.yourdomain.com`)"
+        - "traefik.http.routers.inventree-http.middlewares=inventree-https@docker"
+        - "traefik.http.routers.inventree.entrypoints=websecure"
+        - "traefik.http.routers.inventree.rule=Host(`inventree.yourdomain.com`)"
+        - "traefik.http.routers.inventree.tls=true"
+        - "traefik.http.routers.inventree.tls.certresolver=myresolver"
+        - "traefik.http.services.inventree.loadbalancer.server.port=80"
+        - "traefik.http.middlewares.inventree-https.redirectscheme.scheme=https"
+        # Security
+        - "traefik.http.middlewares.inventree.headers.sslredirect=true"
+        - "traefik.http.middlewares.inventree.headers.stsseconds=315360000"
+        - "traefik.http.services.inventree.loadbalancer.passhostheader=true"
+        - "traefik.http.middlewares.inventree.headers.sslforcehost=true"
+        - "traefik.http.middlewares.inventree.headers.sslhost=inventree.yourdomain.com"
+        - "traefik.http.middlewares.inventree.headers.browserxssfilter=true"
+        - "traefik.http.middlewares.inventree.headers.contenttypenosniff=true"
+        - "traefik.http.middlewares.inventree.headers.forcestsheader=true"
+        - "traefik.http.middlewares.inventree.headers.stsincludesubdomains=true"
+        - "traefik.http.middlewares.inventree.headers.stspreload=true"
+        - "traefik.http.middlewares.inventree.headers.customFrameOptionsValue=SAMEORIGIN"
+
+  mariadb:
+    image: mariadb:latest
+    volumes:
+      - mariadb:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/inventreesql_root_password
+      - MYSQL_DATABASE=inventree
+      - MYSQL_USER=inventree
+      - MYSQL_PASSWORD_FILE=/run/secrets/inventreesql_password
+      # work around for https://github.com/docker-library/mariadb/issues/262
+      - MYSQL_INITDB_SKIP_TZINFO=1
+    secrets:
+      - inventreesql_root_password
+      - inventreesql_password
+    networks:
+      - mariadb
+
+  inventree:
+    image: zeigren/inventree:latest
+    depends_on:
+      - mariadb
+    networks:
+      - inventree
+      - mariadb
+    volumes:
+      - static:/usr/src/static
+      - media:/usr/src/media
+    environment:
+      # RUN MIGRATE_STATIC WHENEVER YOU UPDATE THE INVENTREE CONTAINER TO A NEW VERSION
+      - MIGRATE_STATIC=False
+      - DATABASE_PASSWORD=DOCKER-SECRET->inventreesql_password
+      - DATABASE_NAME=inventree
+      - DATABASE_USER=inventree
+      # CREATE SUPERUSER ONCE THEN DELETE THESE
+      - CREATE_SUPERUSER=False
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_EMAIL=admin@admin.com
+      - DJANGO_SUPERUSER_PASSWORD=admin
+    secrets:
+      - inventreesql_password
+
+networks:
+  inventree:
+  mariadb:
+  traefik:
+    external: true
+
+volumes:
+  static:
+  media:
+  mariadb:
+
+secrets:
+  inventreesql_root_password:
+    external: true
+  inventreesql_password:
+    external: true
+
+configs:
+  inventree_vhost:
+    external: true

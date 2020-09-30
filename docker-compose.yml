@@ -36,11 +36,12 @@ services:
       - static:/usr/src/static
       - media:/usr/src/media
     environment:
+      # RUN MIGRATE_STATIC WHENEVER YOU UPDATE THE INVENTREE CONTAINER TO A NEW VERSION
       - MIGRATE_STATIC=False
       - DATABASE_NAME=inventree
       - DATABASE_USER=inventree
       - DATABASE_PASSWORD=CHANGEME
-# use once then delete from file
+      # CREATE SUPERUSER ONCE THEN DELETE THESE
       - CREATE_SUPERUSER=False
       - DJANGO_SUPERUSER_USERNAME=admin
       - DJANGO_SUPERUSER_EMAIL=admin@admin.com

@@ -2,7 +2,6 @@
 source /env_secrets_expand.sh
 set -e
 
-if [ ! -f "$INVENTREE_HOME/config.yaml" ]; then
 cat > "$INVENTREE_HOME/config.yaml" <<EOF
 # Database backend selection - Configure backend database settings
 # Ref: https://docs.djangoproject.com/en/2.2/ref/settings/#std:setting-DATABASES
@@ -21,7 +20,7 @@ database:
 language: ${DEFAULT_LANGUAGE:-en-us}
 
 # Set debug to False to run in production mode
-debug: ${DEBUG:-True}
+debug: ${DEBUG:-False}
 
 # Allowed hosts (see ALLOWED_HOSTS in Django settings documentation)
 # A list of strings representing the host/domain names that this Django site can serve.
@@ -57,23 +56,52 @@ static_root: ${STATIC_ROOT:-'/usr/src/static'}
 #  - git
 #  - ssh
 
-# Logging options
-# If debug mode is enabled, set log_queries to True to show aggregate database queries in the debug console
-log_queries: ${LOG_QUERIES:-False}
+# Set debug_toolbar to True to enable a debugging toolbar for InvenTree
+# Note: This will only be displayed if DEBUG mode is enabled, 
+#       and only if InvenTree is accessed from a local IP (127.0.0.1)
+debug_toolbar: ${DEBUG_TOOLBAR:-False}
 
 # Backup options
 # Set the backup_dir parameter to store backup files in a specific location
 # If unspecified, the local user's temp directory will be used
 backup_dir: ${BACKUP_DIR:-'/home/inventree/backup/'}
-EOF
-fi
 
-if [ ! -f "$INVENTREE_HOME/secret_key.txt" ] && [ "${SECRET_KEY}" != "" ] ;
-  then cat > "$INVENTREE_HOME/secret_key.txt" <<EOF
-    ${SECRET_KEY}
+# Sentry.io integration
+# If you have a sentry.io account, it can be used to log server errors
+# Ensure sentry_sdk is installed by running 'pip install sentry-sdk'
+sentry:
+  enabled: ${SENTRY_ENABLED:-False}
+  dsn: ${SENTRY_DSN:-}
+
+# LaTeX report rendering
+# InvenTree uses the django-tex plugin to enable LaTeX report rendering
+# Ref: https://pypi.org/project/django-tex/
+# Note: Ensure that a working LaTeX toolchain is installed and working *before* starting the server
+latex:
+  # Select the LaTeX interpreter to use for PDF rendering
+  # Note: The intepreter needs to be installed on the system!
+  # e.g. to install pdflatex: apt-get texlive-latex-base
+  enabled: ${LATEX_ENABLED:-False}
+  # interpreter: pdflatex 
+  # Extra options to pass through to the LaTeX interpreter
+  # options: ''
 EOF
-  else
-    python setup.py ;
+
+if [ ! -f "$INVENTREE_HOME/secret_key.txt" ]; then
+  cat > "$INVENTREE_HOME/password.awk" <<EOF
+BEGIN {
+    srand();
+    chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+    s = "";
+    for(i=0;i<50;i++) {
+        s = s "" substr(chars, int(rand()*62), 1);
+    }
+    print s
+}
+
+EOF
+  awk -f password.awk > "$INVENTREE_HOME/secret_key.txt"
+  rm password.awk
 fi
 
 echo "Test connection to database"
@@ -85,8 +113,13 @@ echo "Give the database a few seconds to warm up"
 sleep 5s
 
 if [ "$MIGRATE_STATIC" = "True" ]; then
-  make -C /usr/src/app/ migrate
+  echo "Running InvenTree database migrations and collecting static files..."
+  python manage.py makemigrations
+  python manage.py migrate
+  python manage.py migrate --run-syncdb
+  python manage.py check
   python manage.py collectstatic --noinput
+  echo "InvenTree static files collected and database migrations completed!"
 fi
 
 if [ "$CREATE_SUPERUSER" = "True" ]; then

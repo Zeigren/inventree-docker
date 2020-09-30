@@ -1,4 +1,4 @@
-# Docker For [InvenTree](https://github.com/inventree/InvenTree)
+# Docker Stack For [InvenTree](https://github.com/inventree/InvenTree)
 
 [![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/inventree)](https://hub.docker.com/r/zeigren/inventree)
 [![MicroBadger](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
@@ -6,19 +6,15 @@
 [![MicroBadger](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
 ![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/inventree)
 
-## [Docker Hub](https://hub.docker.com/r/zeigren/inventree)
+## Usage
 
-## [GitHub](https://github.com/Zeigren/inventree-docker)
+Use [Docker Compose](https://docs.docker.com/compose/) or [Docker Swarm](https://docs.docker.com/engine/swarm/) to deploy InvenTree for either development or production. Templates included for using NGINX or Traefik for SSL termination.
 
-## Stack
+## Links
 
-- [Python:Alpine](https://hub.docker.com/_/python) for InvenTree
-- [Nginx:Alpine](https://hub.docker.com/_/nginx)
-- [MariaDB:10](https://hub.docker.com/_/mariadb)
+### [Docker Hub](https://hub.docker.com/r/zeigren/inventree)
 
-### For Development
-
-- [phpMyAdmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
+### [GitHub](https://github.com/Zeigren/inventree-docker)
 
 ## Tags
 
@@ -28,101 +24,57 @@ Tags follow this naming scheme:
 - InvenTree Tag-Commit Stub (A commit on master newer than the InvenTree Release Tag)
 - latest (this will be the same as the newest InvenTree Tag-Commit Stub)
 
+Using the Release Tags is recommended.
+
 ### Release Tags
 
+- v0.1.3
 - 0.1.1
 - 0.1.0
 - 0.0.10
 - 0.0.8
 
-## Usage
+## Stack
 
-Use [Docker Compose](https://docs.docker.com/compose/) or [Docker Swarm](https://docs.docker.com/engine/swarm/) to deploy InvenTree for either development or production.
+- [Python:Alpine](https://hub.docker.com/_/python) for InvenTree
+- [NGINX:Alpine](https://hub.docker.com/_/nginx)
+- [MariaDB:10](https://hub.docker.com/_/mariadb)
 
-Clone the [GitHub](https://github.com/Zeigren/inventree-docker) repository and create a `config` folder inside the `inventree-docker` directory.
+### For Development
 
-I like using [Portainer](https://www.portainer.io/) since it makes all the tinkering easier, but it's not necessary.
+- [phpMyAdmin](https://hub.docker.com/r/phpmyadmin/phpmyadmin/)
 
-### Quick Test
+## Configuration
 
-To give it a quick test copy the `inventree_dev_vhost.conf` file into the config folder and run the `docker-compose -f docker-compose.yml -f test.yml up -d` command in the `inventree-docker` directory. This will pull all the Docker images and run them.
+Configuration consists of variables in the `.yml` and `.conf` files.
 
-Once they're running edit the `docker-compose.yml` file and change `MIGRATE_STATIC` and `CREATE_SUPERUSER` to `True`, then run `docker-compose -f docker-compose.yml -f test.yml up -d` again. This initializes the database, collects all the static files, and creates a superuser.
+- inventree_vhost = A simple NGINX vhost file for InvenTree (templates included, use `inventree_vhost_ssl` if you're using NGINX for SSL termination)
+- Make whatever changes you need to the appropriate `.yml`. All environment variables for InvenTree can be found in `docker-entrypoint.sh`
 
-Open up a web browser and go to `127.0.0.1:9080` and login with user `admin` and password `admin`, now you're good to go!
+### Using NGINX for SSL Termination
 
-### Configuration
+- yourdomain.com.crt = The SSL certificate for your domain (you'll need to create/copy this)
+- yourdomain.com.key = The SSL key for your domain (you'll need to create/copy this)
 
-Configuration consists of environment variables in the `docker-compose.yml`, `test.yml`, `development.yml`, `production.yml`, and `docker-stack.yml` files or as files contained in the `config` folder.
+### [Docker Compose](https://docs.docker.com/compose/)
 
-Using [multiple Docker Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) makes it easier to differentiate between use cases. `docker-compose.yml` is the base configuration file and `test.yml`, `development.yml`, and `production.yml` are used to either add or override the base configuration.
+Using [multiple Docker Compose files](https://docs.docker.com/compose/extends/#multiple-compose-files) makes it easier to differentiate between use cases. `docker-compose.yml` is the base configuration file and `production.yml` or `development.yml` are used to either add to or override the base configuration.
 
-#### `docker-compose.yml`
+Clone the [repository](https://github.com/Zeigren/inventree-docker), create a `config` folder inside the `inventree-docker` directory, and put the relevant configuration files you created/modified into it.
 
-Settings for MariaDB
-
-- MYSQL_ROOT_PASSWORD=CHANGEME
-- MYSQL_DATABASE=inventree
-- MYSQL_USER=inventree
-- MYSQL_PASSWORD=CHANGEME
-
-Migrate database and collect static files. Use on first run and when upgrading InvenTree.
-
-- MIGRATE_STATIC=True
-
-Create a superuser, should only be used once then deleted
-
-- CREATE_SUPERUSER=True
-- DJANGO_SUPERUSER_USERNAME=admin
-- DJANGO_SUPERUSER_EMAIL=admin@admin.com
-- DJANGO_SUPERUSER_PASSWORD=admin
-  
-Check `docker-entrypoint.sh` for more options.
-
-#### `test.yml`, `development.yml`, and `production.yml`
-
-Enable debug
-
-- DEBUG=True
-
-#### Config Files
-
-The configuration files that can be placed in the `config` folder are:
-
-- inventree_dev_vhost.conf = A simple Nginx vhost file for InvenTree, for development and local testing
-- inventree_prod_vhost.conf = Nginx vhost file for InvenTree that includes SSL termination (simply replace all instances of `YOURDOMAIN`)
-- YOURDOMAIN.com.crt = The SSL certificate for your domain (you’ll need to create/copy this)
-- YOURDOMAIN.com.key = The SSL key for your domain (you’ll need to create/copy this)
-- dhparam.pem = Diffie-Hellman parameter (you’ll need to create/copy this)
-- secret_key.txt = A secret key for Django
-
-For Development:
-dev_requirements.txt = A pip requirements file that can be used in development (example provided)
-
-### Production
-
-Replace all instances of `YOURDOMAIN` in `production.yml` and `inventree_prod_vhost.conf`. Then run `docker-compose -f docker-compose.yml -f production.yml up -d`. If you want to use a specific version of InvenTree change the image used in `production.yml`.
+Run with `docker-compose -f docker-compose.yml -f production.yml up -d`. View using `127.0.0.1:9080`.
 
 ### [Docker Swarm](https://docs.docker.com/engine/swarm/)
 
-I use this with [Traefik](https://traefik.io/) as a reverse proxy, but it’s not necessary.
+I personally use this with [Traefik](https://traefik.io/) as a reverse proxy, I've included an example `traefik.yml` but it's not necessary.
 
-You’ll need to create these [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/):
+You'll need to create the appropriate [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/) and [Docker Configs](https://docs.docker.com/engine/swarm/configs/).
 
-- YOURDOMAIN.com.crt = The SSL certificate for your domain (you’ll need to create/copy this)
-- YOURDOMAIN.com.key = The SSL key for your domain (you’ll need to create/copy this)
-- dhparam.pem = Diffie-Hellman parameter (you’ll need to create/copy this)
-- InvenTreesql_root_password = Root password for your SQL database
-- InvenTreesql_password = InvenTree user password for your SQL database
-- secret_key = A secret key for Django
+Run with `docker stack deploy --compose-file docker-swarm.yml inventree`
 
-You’ll also need to create this [Docker Config](https://docs.docker.com/engine/swarm/configs/):
+## Deployment
 
-- inventree_vhost = The Nginx vhost file for InvenTree (use the inventree_prod_vhost.conf template and simply replace all instances of `YOURDOMAIN`)
-
-Make whatever changes you need to docker-stack.yml (replace all instances of `YOURDOMAIN`).
-
-Run with `docker stack deploy --compose-file docker-stack.yml inventree`
+On first run you'll need to create a superuser using the variables in the `.yml` file. You will also need to migrate the database and collect static files by changing the `MIGRATE_STATIC` variable in the `.yml` file, this also needs to be done everytime InvenTree is updated.
 
 ## Theory of operation
 
@@ -134,7 +86,7 @@ The multi-stage build creates a container that can be used for development and a
 
 On startup, the container first runs the `docker-entrypoint.sh` script before running the `gunicorn -c gunicorn.conf.py InvenTree.wsgi` command.
 
-`docker-entrypoint.sh` creates configuration files and runs commands based on environment variables that are declared in the various compose files.
+`docker-entrypoint.sh` creates configuration files and runs commands based on environment variables that are declared in the various `.yml` files.
 
 `env_secrets_expand.sh` handles using Docker Secrets.
 

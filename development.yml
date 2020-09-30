@@ -2,7 +2,7 @@ version: '3.7'
 services:
   nginx:
     volumes:
-      - ./config/inventree_dev_vhost.conf:/etc/nginx/conf.d/default.conf
+      - ./config/inventree_vhost.conf:/etc/nginx/conf.d/default.conf
     ports:
       - "9080:80"
 
@@ -10,6 +10,7 @@ services:
     image: inventree:development
     environment:
       - DEBUG=True
+      - DEBUG_TOOLBAR=True
     volumes:
       - ./InvenTree:/usr/src/app
 

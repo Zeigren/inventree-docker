@@ -21,14 +21,14 @@ RUN apk add --no-cache \
 
 # Uncomment COPY and change DEV="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
-#ENV DEV="True"
+ENV DEV_FILE="False"
 
 RUN if [ $DOCKER_TAG = latest ] ; \
     then git clone --branch master --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; \
     else git clone --branch ${VERSION} --depth 1 https://github.com/inventree/InvenTree.git ${INVENTREE_ROOT} ; fi \
     && python -m venv $VIRTUAL_ENV \
     && pip install --upgrade pip setuptools wheel \
-    && if [ $DEV = True ] ; \
+    && if [ $DEV_FILE = True ] ; \
     then pip install --no-cache-dir -U -r /usr/src/dev_requirements.txt mysqlclient gunicorn ; \
     else pip install --no-cache-dir -U -r /usr/src/app/requirements.txt mysqlclient gunicorn ; fi
 
