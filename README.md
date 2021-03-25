@@ -24,10 +24,11 @@ Tags follow this naming scheme:
 - InvenTree Tag-Commit Stub (A commit on master newer than the InvenTree Release Tag)
 - latest (this will be the same as the newest InvenTree Tag-Commit Stub)
 
-Using the Release Tags is recommended.
+Using one of the Release Tags is recommended as the other tags are untested and may not work properly.
 
 ### Release Tags
 
+- 0.1.7
 - v0.1.3
 - 0.1.1
 - 0.1.0
@@ -53,8 +54,8 @@ Configuration consists of variables in the `.yml` and `.conf` files.
 
 ### Using NGINX for SSL Termination
 
-- yourdomain.com.crt = The SSL certificate for your domain (you'll need to create/copy this)
-- yourdomain.com.key = The SSL key for your domain (you'll need to create/copy this)
+- yourdomain.test.crt = The SSL certificate for your domain (you'll need to create/copy this)
+- yourdomain.test.key = The SSL key for your domain (you'll need to create/copy this)
 
 ### [Docker Compose](https://docs.docker.com/compose/)
 

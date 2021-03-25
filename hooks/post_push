@@ -2,7 +2,7 @@
 
 INVENTREE_MASTER_COMMIT=$(git ls-remote https://github.com/inventree/InvenTree.git master)
 COMMIT_STUB=$(echo $INVENTREE_MASTER_COMMIT | cut -c1-7)
-INVENTREE_TAG=$(git tag --sort=-version:refname | head -n 1)
+INVENTREE_TAG=$(git -c 'versionsort.suffix=v' ls-remote --exit-code --tags --sort=-version:refname https://github.com/inventree/InvenTree.git | head -n 1 | cut --delimiter='/' --fields=3)
 
 echo $INVENTREE_MASTER_COMMIT
 echo $COMMIT_STUB

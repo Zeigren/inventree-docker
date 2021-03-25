@@ -25,7 +25,7 @@ services:
       - mariadb:/var/lib/mysql
 
   inventree:
-    image: zeigren/inventree:latest
+    image: zeigren/inventree:0.1.7
     container_name: inventree
     depends_on:
       - mariadb

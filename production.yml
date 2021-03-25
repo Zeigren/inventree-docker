@@ -4,8 +4,8 @@ services:
     volumes:
       - ./config/inventree_vhost.conf:/etc/nginx/conf.d/default.conf
       # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
-      # - ./config/yourdomain.com.crt:/etc/nginx/certs/yourdomain.com.crt
-      # - ./config/yourdomain.com.key:/etc/nginx/certs/yourdomain.com.key
+      # - ./config/yourdomain.test.crt:/etc/nginx/certs/yourdomain.test.crt
+      # - ./config/yourdomain.test.key:/etc/nginx/certs/yourdomain.test.key
     ports:
       # CHANGE TO "80:80" IF USING NGINX FOR SSL TERMINATION
       - "9080:80"

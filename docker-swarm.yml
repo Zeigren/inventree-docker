@@ -16,10 +16,10 @@ services:
       - source: inventree_vhost
         target: /etc/nginx/conf.d/default.conf
     secrets:
-      - source: yourdomain.com.crt
-        target: /etc/nginx/certs/yourdomain.com.crt
-      - source: yourdomain.com.key
-        target: /etc/nginx/certs/yourdomain.com.key
+      - source: yourdomain.test.crt
+        target: /etc/nginx/certs/yourdomain.test.crt
+      - source: yourdomain.test.key
+        target: /etc/nginx/certs/yourdomain.test.key
 
   mariadb:
     image: mariadb:latest
@@ -39,7 +39,7 @@ services:
       - mariadb
 
   inventree:
-    image: zeigren/inventree:latest
+    image: zeigren/inventree:0.1.7
     depends_on:
       - mariadb
     networks:
@@ -76,9 +76,9 @@ secrets:
     external: true
   inventreesql_password:
     external: true
-  yourdomain.com.crt:
+  yourdomain.test.crt:
     external: true
-  yourdomain.com.key:
+  yourdomain.test.key:
     external: true
 
 configs:

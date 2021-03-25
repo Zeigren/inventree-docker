@@ -18,10 +18,10 @@ services:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik"
         - "traefik.http.routers.inventree-http.entrypoints=web"
-        - "traefik.http.routers.inventree-http.rule=Host(`inventree.yourdomain.com`)"
+        - "traefik.http.routers.inventree-http.rule=Host(`inventree.yourdomain.test`)"
         - "traefik.http.routers.inventree-http.middlewares=inventree-https@docker"
         - "traefik.http.routers.inventree.entrypoints=websecure"
-        - "traefik.http.routers.inventree.rule=Host(`inventree.yourdomain.com`)"
+        - "traefik.http.routers.inventree.rule=Host(`inventree.yourdomain.test`)"
         - "traefik.http.routers.inventree.tls=true"
         - "traefik.http.routers.inventree.tls.certresolver=myresolver"
         - "traefik.http.services.inventree.loadbalancer.server.port=80"
@@ -31,7 +31,7 @@ services:
         - "traefik.http.middlewares.inventree.headers.stsseconds=315360000"
         - "traefik.http.services.inventree.loadbalancer.passhostheader=true"
         - "traefik.http.middlewares.inventree.headers.sslforcehost=true"
-        - "traefik.http.middlewares.inventree.headers.sslhost=inventree.yourdomain.com"
+        - "traefik.http.middlewares.inventree.headers.sslhost=inventree.yourdomain.test"
         - "traefik.http.middlewares.inventree.headers.browserxssfilter=true"
         - "traefik.http.middlewares.inventree.headers.contenttypenosniff=true"
         - "traefik.http.middlewares.inventree.headers.forcestsheader=true"
@@ -57,7 +57,7 @@ services:
       - mariadb
 
   inventree:
-    image: zeigren/inventree:latest
+    image: zeigren/inventree:0.1.7
     depends_on:
       - mariadb
     networks:

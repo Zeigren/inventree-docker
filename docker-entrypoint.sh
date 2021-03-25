@@ -19,8 +19,33 @@ database:
 # Select default system language (default is 'en-us')
 language: ${DEFAULT_LANGUAGE:-en-us}
 
+# System time-zone (default is UTC)
+# Reference: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+# Select an option from the "TZ database name" column
+timezone: ${TIMEZONE:-UTC}
+
+# List of currencies supported by default.
+# Add other currencies here to allow use in InvenTree
+currencies:
+  - AUD
+  - CAD
+  - EUR
+  - GBP
+  - JPY
+  - NZD
+  - USD
+
 # Set debug to False to run in production mode
 debug: ${DEBUG:-False}
+
+# Set debug_toolbar to True to enable a debugging toolbar for InvenTree
+# Note: This will only be displayed if DEBUG mode is enabled, 
+#       and only if InvenTree is accessed from a local IP (127.0.0.1)
+debug_toolbar: ${DEBUG_TOOLBAR:-False}
+
+# Configure the system logging level
+# Options: DEBUG / INFO / WARNING / ERROR / CRITICAL
+log_level: WARNING
 
 # Allowed hosts (see ALLOWED_HOSTS in Django settings documentation)
 # A list of strings representing the host/domain names that this Django site can serve.
@@ -56,35 +81,27 @@ static_root: ${STATIC_ROOT:-'/usr/src/static'}
 #  - git
 #  - ssh
 
-# Set debug_toolbar to True to enable a debugging toolbar for InvenTree
-# Note: This will only be displayed if DEBUG mode is enabled, 
-#       and only if InvenTree is accessed from a local IP (127.0.0.1)
-debug_toolbar: ${DEBUG_TOOLBAR:-False}
-
 # Backup options
 # Set the backup_dir parameter to store backup files in a specific location
 # If unspecified, the local user's temp directory will be used
 backup_dir: ${BACKUP_DIR:-'/home/inventree/backup/'}
 
-# Sentry.io integration
-# If you have a sentry.io account, it can be used to log server errors
-# Ensure sentry_sdk is installed by running 'pip install sentry-sdk'
-sentry:
-  enabled: ${SENTRY_ENABLED:-False}
-  dsn: ${SENTRY_DSN:-}
+# Permit custom authentication backends
+#authentication_backends:
+#  - 'django.contrib.auth.backends.ModelBackend'
 
-# LaTeX report rendering
-# InvenTree uses the django-tex plugin to enable LaTeX report rendering
-# Ref: https://pypi.org/project/django-tex/
-# Note: Ensure that a working LaTeX toolchain is installed and working *before* starting the server
-latex:
-  # Select the LaTeX interpreter to use for PDF rendering
-  # Note: The intepreter needs to be installed on the system!
-  # e.g. to install pdflatex: apt-get texlive-latex-base
-  enabled: ${LATEX_ENABLED:-False}
-  # interpreter: pdflatex 
-  # Extra options to pass through to the LaTeX interpreter
-  # options: ''
+#  Custom middleware, sometimes needed alongside an authentication backend change.
+#middleware:
+#  - 'django.middleware.security.SecurityMiddleware'
+#  - 'django.contrib.sessions.middleware.SessionMiddleware'
+#  - 'django.middleware.locale.LocaleMiddleware'
+#  - 'django.middleware.common.CommonMiddleware'
+#  - 'django.middleware.csrf.CsrfViewMiddleware'
+#  - 'corsheaders.middleware.CorsMiddleware'
+#  - 'django.contrib.auth.middleware.AuthenticationMiddleware'
+#  - 'django.contrib.messages.middleware.MessageMiddleware'
+#  - 'django.middleware.clickjacking.XFrameOptionsMiddleware'
+#  - 'InvenTree.middleware.AuthRequiredMiddleware'
 EOF
 
 if [ ! -f "$INVENTREE_HOME/secret_key.txt" ]; then
