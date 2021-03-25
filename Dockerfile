@@ -17,7 +17,9 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
     gcc g++ mariadb-dev libjpeg-turbo-dev zlib-dev git musl-dev make bash libgcc \
-    libstdc++ jpeg-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
+    libstdc++ jpeg-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev fontconfig \
+    font-noto \
+    && fc-cache -f
 
 # Uncomment COPY and change DEV="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
@@ -71,7 +73,8 @@ ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 RUN apk add --no-cache \
     mariadb-connector-c git make libjpeg-turbo zlib libstdc++ \
-    jpeg-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev
+    jpeg-dev libffi-dev cairo-dev pango-dev gdk-pixbuf-dev fontconfig font-noto \
+    && fc-cache -f
 
 COPY --from=development $VIRTUAL_ENV $VIRTUAL_ENV
 COPY --from=development $INVENTREE_ROOT $INVENTREE_ROOT
