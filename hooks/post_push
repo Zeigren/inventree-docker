@@ -1,15 +1,18 @@
 #!/bin/bash
 
+if [ "$DOCKER_TAG" = "latest" ]; then
+
 INVENTREE_MASTER_COMMIT=$(git ls-remote https://github.com/inventree/InvenTree.git master)
 COMMIT_STUB=$(echo $INVENTREE_MASTER_COMMIT | cut -c1-7)
 INVENTREE_TAG=$(git -c 'versionsort.suffix=v' ls-remote --exit-code --tags --sort=-version:refname https://github.com/inventree/InvenTree.git | head -n 1 | cut --delimiter='/' --fields=3)
+GIT_VERSION=$(git --version)
 
 echo $INVENTREE_MASTER_COMMIT
 echo $COMMIT_STUB
 echo $INVENTREE_TAG
 echo $DOCKER_TAG
+echo $GIT_VERSION
 echo "[***] Adding labels"
 
-if [ "$DOCKER_TAG" = "latest" ]; then
 docker tag $IMAGE_NAME $DOCKER_REPO:$INVENTREE_TAG-$COMMIT_STUB
 docker push $DOCKER_REPO:$INVENTREE_TAG-$COMMIT_STUB ; fi
