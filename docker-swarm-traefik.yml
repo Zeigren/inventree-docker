@@ -57,7 +57,7 @@ services:
       - mariadb
 
   inventree:
-    image: zeigren/inventree:0.1.7
+    image: zeigren/inventree:0.2.1
     depends_on:
       - mariadb
     networks:

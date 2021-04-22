@@ -1,9 +1,7 @@
 # Docker Stack For [InvenTree](https://github.com/inventree/InvenTree)
 
-[![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/inventree)](https://hub.docker.com/r/zeigren/inventree)
-[![MicroBadger](https://images.microbadger.com/badges/image/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
-[![MicroBadger](https://images.microbadger.com/badges/version/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
-[![MicroBadger](https://images.microbadger.com/badges/commit/zeigren/inventree.svg)](https://microbadger.com/images/zeigren/inventree)
+![DockerHub Build Status](https://img.shields.io/docker/cloud/build/zeigren/inventree)
+![Docker Image Size (latest)](https://img.shields.io/docker/image-size/zeigren/inventree/latest)
 ![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/inventree)
 
 ## Usage
@@ -28,6 +26,7 @@ Using one of the Release Tags is recommended as the other tags are untested and 
 
 ### Release Tags
 
+- 0.2.1
 - 0.1.7
 - v0.1.3
 - 0.1.1

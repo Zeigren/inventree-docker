@@ -7,7 +7,7 @@ cat > "$INVENTREE_HOME/config.yaml" <<EOF
 # Ref: https://docs.djangoproject.com/en/2.2/ref/settings/#std:setting-DATABASES
 # Specify database parameters below as they appear in the Django docs
 database:
-  
+
   # Example Configuration - MySQL
   ENGINE: ${DATABASE_ENGINE:-django.db.backends.mysql}
   NAME: ${DATABASE_NAME:-inventree}
@@ -34,6 +34,31 @@ currencies:
   - JPY
   - NZD
   - USD
+
+# Email backend configuration
+# Ref: https://docs.djangoproject.com/en/dev/topics/email/
+# Available options:
+# host: Email server host address
+# port: Email port
+# username: Account username
+# password: Account password
+# prefix: Email subject prefix
+# tls: Enable TLS support
+# ssl: Enable SSL support
+
+# Alternatively, these options can all be set using environment variables,
+# with the INVENTREE_EMAIL_ prefix:
+# e.g. INVENTREE_EMAIL_HOST / INVENTREE_EMAIL_PORT / INVENTREE_EMAIL_USERNAME
+# Refer to the InvenTree documentation for more information
+
+email:
+  # backend: 'django.core.mail.backends.smtp.EmailBackend'
+  host: ${INVENTREE_EMAIL_HOST:-EMAIL_HOST}
+  port: ${INVENTREE_EMAIL_PORT:-25}
+  username: ${INVENTREE_EMAIL_USERNAME:-EMAIL_USERNAME}
+  password: ${INVENTREE_EMAIL_PASSWORD:-EMAIL_PASSWORD}
+  tls: ${INVENTREE_EMAIL_TLS:-False}
+  ssl: ${INVENTREE_EMAIL_SSL:-False}
 
 # Set debug to False to run in production mode
 debug: ${DEBUG:-False}
@@ -131,16 +156,19 @@ sleep 5s
 
 if [ "$MIGRATE_STATIC" = "True" ]; then
   echo "Running InvenTree database migrations and collecting static files..."
-  python manage.py makemigrations
-  python manage.py migrate
-  python manage.py migrate --run-syncdb
   python manage.py check
+  python manage.py makemigrations
+  python manage.py migrate --noinput
+  python manage.py migrate --run-syncdb
   python manage.py collectstatic --noinput
+  python manage.py clearsessions
   echo "InvenTree static files collected and database migrations completed!"
 fi
 
 if [ "$CREATE_SUPERUSER" = "True" ]; then
   python manage.py createsuperuser --noinput
 fi
+
+nohup python manage.py qcluster >/dev/null 2>&1 &
 
 exec "$@"
