@@ -1,34 +1,45 @@
-version: '3.7'
+version: "3.7"
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
 services:
   nginx:
     image: nginx:alpine
-    depends_on:
-      - inventree
+    # https://hub.docker.com/_/nginx
     networks:
       - inventree
     volumes:
       - static:/var/www/inventree/static
       - media:/var/www/inventree/media
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_processes
+      - NGINX_WORKER_PROCESSES=auto
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_rlimit_nofile
+      - NGINX_WORKER_RLIMIT_NOFILE=65535
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_connections
+      - NGINX_WORKER_CONNECTIONS=65535
+      # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+      - NGINX_CLIENT_MAX_BODY_SIZE=10m
+      # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_body_timeout
+      - NGINX_CLIENT_BODY_TIMEOUT=30s
+      - NGINX_HOST=inventree.yourdomain.test
 
   mariadb:
     image: mariadb:latest
+    # https://hub.docker.com/_/mariadb
     environment:
       - MYSQL_ROOT_PASSWORD=CHANGEME
       - MYSQL_DATABASE=inventree
       - MYSQL_USER=inventree
       - MYSQL_PASSWORD=CHANGEME
-# work around for https://github.com/docker-library/mariadb/issues/262
-      - MYSQL_INITDB_SKIP_TZINFO=1
     networks:
       - mariadb
     volumes:
       - mariadb:/var/lib/mysql
 
   inventree:
-    image: zeigren/inventree:0.2.1
+    image: zeigren/inventree:0.2.2
+    # https://hub.docker.com/r/zeigren/inventree
     container_name: inventree
-    depends_on:
-      - mariadb
     networks:
       - inventree
       - mariadb
@@ -36,11 +47,10 @@ services:
       - static:/usr/src/static
       - media:/usr/src/media
     environment:
-      # RUN MIGRATE_STATIC WHENEVER YOU UPDATE THE INVENTREE CONTAINER TO A NEW VERSION
-      - MIGRATE_STATIC=False
+      - DATABASE_PASSWORD=CHANGEME
       - DATABASE_NAME=inventree
       - DATABASE_USER=inventree
-      - DATABASE_PASSWORD=CHANGEME
+      #- GUNICORN_WORKERS=2
       # CREATE SUPERUSER ONCE THEN DELETE THESE
       - CREATE_SUPERUSER=False
       - DJANGO_SUPERUSER_USERNAME=admin

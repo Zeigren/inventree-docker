@@ -1,9 +1,9 @@
-version: "3.7"
+version: "3.8"
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
 services:
   nginx:
     image: nginx:alpine
-    depends_on:
-      - inventree
+    # https://hub.docker.com/_/nginx
     networks:
       - inventree
       - traefik
@@ -11,36 +11,31 @@ services:
       - static:/var/www/inventree/static
       - media:/var/www/inventree/media
     configs:
-      - source: inventree_vhost
-        target: /etc/nginx/conf.d/default.conf
+      - source: inventree_nginx.conf
+        target: /etc/nginx/templates/nginx.conf.template
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_processes
+      - NGINX_WORKER_PROCESSES=auto
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_rlimit_nofile
+      - NGINX_WORKER_RLIMIT_NOFILE=65535
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_connections
+      - NGINX_WORKER_CONNECTIONS=65535
+      # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+      - NGINX_CLIENT_MAX_BODY_SIZE=10m
+      # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_body_timeout
+      - NGINX_CLIENT_BODY_TIMEOUT=30s
+      - NGINX_HOST=inventree.yourdomain.test
     deploy:
       labels:
         - "traefik.enable=true"
-        - "traefik.docker.network=traefik"
-        - "traefik.http.routers.inventree-http.entrypoints=web"
-        - "traefik.http.routers.inventree-http.rule=Host(`inventree.yourdomain.test`)"
-        - "traefik.http.routers.inventree-http.middlewares=inventree-https@docker"
-        - "traefik.http.routers.inventree.entrypoints=websecure"
-        - "traefik.http.routers.inventree.rule=Host(`inventree.yourdomain.test`)"
-        - "traefik.http.routers.inventree.tls=true"
-        - "traefik.http.routers.inventree.tls.certresolver=myresolver"
-        - "traefik.http.services.inventree.loadbalancer.server.port=80"
-        - "traefik.http.middlewares.inventree-https.redirectscheme.scheme=https"
-        # Security
-        - "traefik.http.middlewares.inventree.headers.sslredirect=true"
-        - "traefik.http.middlewares.inventree.headers.stsseconds=315360000"
-        - "traefik.http.services.inventree.loadbalancer.passhostheader=true"
-        - "traefik.http.middlewares.inventree.headers.sslforcehost=true"
-        - "traefik.http.middlewares.inventree.headers.sslhost=inventree.yourdomain.test"
-        - "traefik.http.middlewares.inventree.headers.browserxssfilter=true"
-        - "traefik.http.middlewares.inventree.headers.contenttypenosniff=true"
-        - "traefik.http.middlewares.inventree.headers.forcestsheader=true"
-        - "traefik.http.middlewares.inventree.headers.stsincludesubdomains=true"
-        - "traefik.http.middlewares.inventree.headers.stspreload=true"
-        - "traefik.http.middlewares.inventree.headers.customFrameOptionsValue=SAMEORIGIN"
+        - "traefik.http.routers.bookstack.entrypoints=websecure"
+        - "traefik.http.routers.bookstack.rule=Host(`inventree.yourdomain.test`)"
+        - "traefik.http.services.bookstack.loadbalancer.server.port=80" # Port traefik needs to route traffic to
 
   mariadb:
     image: mariadb:latest
+    # https://hub.docker.com/_/mariadb
     volumes:
       - mariadb:/var/lib/mysql
     environment:
@@ -48,8 +43,6 @@ services:
       - MYSQL_DATABASE=inventree
       - MYSQL_USER=inventree
       - MYSQL_PASSWORD_FILE=/run/secrets/inventreesql_password
-      # work around for https://github.com/docker-library/mariadb/issues/262
-      - MYSQL_INITDB_SKIP_TZINFO=1
     secrets:
       - inventreesql_root_password
       - inventreesql_password
@@ -57,9 +50,8 @@ services:
       - mariadb
 
   inventree:
-    image: zeigren/inventree:0.2.1
-    depends_on:
-      - mariadb
+    image: zeigren/inventree:0.2.2
+    # https://hub.docker.com/r/zeigren/inventree
     networks:
       - inventree
       - mariadb
@@ -67,11 +59,10 @@ services:
       - static:/usr/src/static
       - media:/usr/src/media
     environment:
-      # RUN MIGRATE_STATIC WHENEVER YOU UPDATE THE INVENTREE CONTAINER TO A NEW VERSION
-      - MIGRATE_STATIC=False
       - DATABASE_PASSWORD=DOCKER-SECRET->inventreesql_password
       - DATABASE_NAME=inventree
       - DATABASE_USER=inventree
+      #- GUNICORN_WORKERS=2
       # CREATE SUPERUSER ONCE THEN DELETE THESE
       - CREATE_SUPERUSER=False
       - DJANGO_SUPERUSER_USERNAME=admin
@@ -98,5 +89,5 @@ secrets:
     external: true
 
 configs:
-  inventree_vhost:
+  inventree_nginx.conf:
     external: true

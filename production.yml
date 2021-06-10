@@ -1,13 +1,18 @@
-version: '3.7'
+version: "3.7"
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
 services:
   nginx:
     volumes:
-      - ./config/inventree_vhost.conf:/etc/nginx/conf.d/default.conf
+      - ./config/inventree_nginx.conf:/etc/nginx/templates/nginx.conf.template
       # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
       # - ./config/yourdomain.test.crt:/etc/nginx/certs/yourdomain.test.crt
       # - ./config/yourdomain.test.key:/etc/nginx/certs/yourdomain.test.key
     ports:
-      # CHANGE TO "80:80" IF USING NGINX FOR SSL TERMINATION
-      - "9080:80"
+      # CHANGE TO 80:80 IF USING NGINX FOR SSL TERMINATION
+      - 9080:80
       # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
-      # - "443:443"
+      # - 443:443
+    environment:
+      # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
+      # - NGINX_SSL_CERT=yourdomain.test.crt
+      # - NGINX_SSL_KEY=yourdomain.test.key

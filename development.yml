@@ -1,16 +1,18 @@
-version: '3.7'
+version: "3.7"
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
 services:
   nginx:
     volumes:
-      - ./config/inventree_vhost.conf:/etc/nginx/conf.d/default.conf
+      - ./config/inventree_nginx.conf:/etc/nginx/templates/nginx.conf.template
     ports:
-      - "9080:80"
+      - 9080:80
 
   inventree:
     image: inventree:development
     environment:
       - DEBUG=True
       - DEBUG_TOOLBAR=True
+      - MIGRATE_STATIC=False
     volumes:
       - ./InvenTree:/usr/src/app
 
@@ -30,4 +32,4 @@ services:
       - PMA_USER=inventree
       - PMA_PASSWORD=CHANGEME
     ports:
-      - "6060:80"
+      - 6060:80

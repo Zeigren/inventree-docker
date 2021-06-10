@@ -1,22 +1,43 @@
-version: "3.7"
-
+version: "3.8"
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
 services:
   traefik:
+    # https://doc.traefik.io/traefik/
     image: traefik:latest
+    # https://hub.docker.com/_/traefik
     command:
+      # https://doc.traefik.io/traefik/reference/static-configuration/cli/
+      # Enable dashboard and api access https://doc.traefik.io/traefik/operations/dashboard/
       - "--api.insecure=true"
+      # Enable docker backend https://doc.traefik.io/traefik/providers/docker/
       - "--providers.docker=true"
+      # Use docker swarm
       - "--providers.docker.swarmmode=true"
+      # Don't expose containers to the internet
       - "--providers.docker.exposedbydefault=false"
+      # Network used to connect containers to traefik
+      - "--providers.docker.network=traefik"
+      # HTTP entrypoint
       - "--entrypoints.web.address=:80"
+      # Redirect HTTP to HTTPS
+      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
+      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
+      # HTTPS entrypoint
       - "--entrypoints.websecure.address=:443"
-      - "--certificatesResolvers.myresolver.acme.httpChallenge.entryPoint=web"
-      - "--certificatesResolvers.myresolver.acme.email=EMAIL@CHANGEME.COM"
-      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+      # Enable TLS for HTTPS by default
+      - "--entrypoints.websecure.http.tls=true"
+      # Default certificate resolver
+      - "--entrypoints.websecure.http.tls.certresolver=letsencrypt"
+      # Use HTTP-01 challenge to get TLS certs
+      - "--certificatesResolvers.letsencrypt.acme.httpchallenge.entryPoint=web"
+      # Email used to register cert
+      - "--certificatesResolvers.letsencrypt.acme.email=email@yourdomain.test"
+      # Where to save certs
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
     ports:
-      - "80:80"
-      - "443:443"
-      - "8080:8080"
+      - 80:80
+      - 443:443
+      - 8080:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - traefik:/letsencrypt

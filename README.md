@@ -1,18 +1,11 @@
 # Docker Stack For [InvenTree](https://github.com/inventree/InvenTree)
 
-![DockerHub Build Status](https://img.shields.io/docker/cloud/build/zeigren/inventree)
 ![Docker Image Size (latest)](https://img.shields.io/docker/image-size/zeigren/inventree/latest)
 ![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/inventree)
 
 ## Usage
 
-Use [Docker Compose](https://docs.docker.com/compose/) or [Docker Swarm](https://docs.docker.com/engine/swarm/) to deploy InvenTree for either development or production. Templates included for using NGINX or Traefik for SSL termination.
-
-## Links
-
-### [Docker Hub](https://hub.docker.com/r/zeigren/inventree)
-
-### [GitHub](https://github.com/Zeigren/inventree-docker)
+Use [Docker Compose](https://docs.docker.com/compose/) or [Docker Swarm](https://docs.docker.com/engine/swarm/) to deploy for either development or production. Templates included for using NGINX or Traefik for SSL termination.
 
 ## Tags
 
@@ -26,6 +19,7 @@ Using one of the Release Tags is recommended as the other tags are untested and 
 
 ### Release Tags
 
+- 0.2.2
 - 0.2.1
 - 0.1.7
 - v0.1.3
@@ -33,6 +27,12 @@ Using one of the Release Tags is recommended as the other tags are untested and 
 - 0.1.0
 - 0.0.10
 - 0.0.8
+
+## Links
+
+### [Docker Hub](https://hub.docker.com/r/zeigren/inventree)
+
+### [GitHub](https://github.com/Zeigren/inventree-docker)
 
 ## Stack
 
@@ -46,9 +46,9 @@ Using one of the Release Tags is recommended as the other tags are untested and 
 
 ## Configuration
 
-Configuration consists of variables in the `.yml` and `.conf` files.
+Configuration consists of environment variables in the `.yml` and `.conf` files.
 
-- inventree_vhost = A simple NGINX vhost file for InvenTree (templates included, use `inventree_vhost_ssl` if you're using NGINX for SSL termination)
+- inventree_nginx.conf = NGINX config file (only needs to be modified if you're using NGINX for SSL termination)
 - Make whatever changes you need to the appropriate `.yml`. All environment variables for InvenTree can be found in `docker-entrypoint.sh`
 
 ### Using NGINX for SSL Termination
@@ -74,7 +74,7 @@ Run with `docker stack deploy --compose-file docker-swarm.yml inventree`
 
 ## Deployment
 
-On first run you'll need to create a superuser using the variables in the `.yml` file. You will also need to migrate the database and collect static files by changing the `MIGRATE_STATIC` variable in the `.yml` file, this also needs to be done everytime InvenTree is updated.
+On first run you'll need to create a superuser using the variables in the `.yml` file.
 
 ## Theory of operation
 

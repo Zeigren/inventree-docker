@@ -24,6 +24,9 @@ language: ${DEFAULT_LANGUAGE:-en-us}
 # Select an option from the "TZ database name" column
 timezone: ${TIMEZONE:-UTC}
 
+# Base currency code
+base_currency: USD
+
 # List of currencies supported by default.
 # Add other currencies here to allow use in InvenTree
 currencies:
@@ -106,11 +109,6 @@ static_root: ${STATIC_ROOT:-'/usr/src/static'}
 #  - git
 #  - ssh
 
-# Backup options
-# Set the backup_dir parameter to store backup files in a specific location
-# If unspecified, the local user's temp directory will be used
-backup_dir: ${BACKUP_DIR:-'/home/inventree/backup/'}
-
 # Permit custom authentication backends
 #authentication_backends:
 #  - 'django.contrib.auth.backends.ModelBackend'
@@ -146,20 +144,33 @@ EOF
   rm password.awk
 fi
 
-echo "Test connection to database"
+echo "Creating gunicorn.conf.py"
+# https://docs.gunicorn.org/en/stable/configure.html
+cat > "$INVENTREE_HOME/gunicorn.conf.py" <<EOF
+import multiprocessing
 
+bind = "0.0.0.0:8000"
+
+workers = ${GUNICORN_WORKERS:-multiprocessing.cpu_count() * 2}
+
+max_requests = 1000
+max_requests_jitter = 50
+
+EOF
+
+echo "Test connection to database"
 /wait-for.sh ${DATABASE_HOST:-mariadb}:${DATABASE_PORT:-3306} -- echo 'Success!'
 
 echo "Give the database a few seconds to warm up"
-
 sleep 5s
 
-if [ "$MIGRATE_STATIC" = "True" ]; then
-  echo "Running InvenTree database migrations and collecting static files..."
+if [ "${MIGRATE_STATIC:-True}" = "True" ]; then
+  echo "Running database migrations and collecting static files"
   python manage.py check
   python manage.py makemigrations
   python manage.py migrate --noinput
   python manage.py migrate --run-syncdb
+  python manage.py prerender
   python manage.py collectstatic --noinput
   python manage.py clearsessions
   echo "InvenTree static files collected and database migrations completed!"
@@ -169,6 +180,7 @@ if [ "$CREATE_SUPERUSER" = "True" ]; then
   python manage.py createsuperuser --noinput
 fi
 
+echo "Running qcluster workers"
 nohup python manage.py qcluster >/dev/null 2>&1 &
 
 exec "$@"

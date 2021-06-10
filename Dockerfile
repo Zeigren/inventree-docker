@@ -21,7 +21,7 @@ RUN apk add --no-cache \
     font-noto \
     && fc-cache -f
 
-# Uncomment COPY and change DEV="True" to install new requirements in development
+# Uncomment COPY and change DEV_FILE="True" to install new requirements in development
 #COPY dev_requirements.txt /usr/src/dev_requirements.txt
 ENV DEV_FILE="False"
 
